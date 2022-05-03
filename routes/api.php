@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\DestinationController;
+use App\Http\Controllers\RoomController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -21,3 +22,4 @@ function notFound () {
 
 Route::apiResource('users', UserController::class)->missing('notFound');
 Route::apiResource('destinations', DestinationController::class)->missing('notFound');
+Route::apiResource('rooms', RoomController::class)->missing('notFound');
