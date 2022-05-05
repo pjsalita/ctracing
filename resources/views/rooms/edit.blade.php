@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="flex items-center justify-between mb-5">
-    <h1 class="text-xl font-bold">Edit Room</h1>
+    <h1 class="text-xl font-bold">Edit Building</h1>
 </div>
 
 <form class="max-w-2xl" method="post" action="{{ route('room.update', $room->id) }}">

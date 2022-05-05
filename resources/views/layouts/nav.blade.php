@@ -13,11 +13,11 @@
                                 Contact Tracing Info
                             </a>
                             <a href="{{ route('room.index') }}" class="{{ request()->routeIs('room.*') ? 'menu-active' : 'menu-link' }}">
-                                Rooms
+                                Building Information
                             </a>
-                            <a href="{{ route('destination.index') }}" class="{{ request()->routeIs('destination.*') ? 'menu-active' : 'menu-link' }}">
+                            {{-- <a href="{{ route('destination.index') }}" class="{{ request()->routeIs('destination.*') ? 'menu-active' : 'menu-link' }}">
                                 Destinations
-                            </a>
+                            </a> --}}
                         </div>
                         <form method="POST" action="{{ route('logout') }}" class="ml-auto">
                             @csrf
