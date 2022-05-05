@@ -15,7 +15,7 @@ class RoomController extends Controller
      */
     public function index()
     {
-        if (request()->ajax()) {
+        if (request()->ajax() || request()->route()->getPrefix() === 'api') {
             return response()->json(Room::all());
         }
 
@@ -41,7 +41,7 @@ class RoomController extends Controller
             'roomName' => 'required|string|max:255',
         ];
 
-        if ($request->ajax()) {
+        if ($request->ajax() || $request->route()->getPrefix() === 'api') {
             $response = [
                 'status' => 403,
                 'success' => false,
@@ -100,7 +100,7 @@ class RoomController extends Controller
             'roomName' => 'sometimes|string|max:255',
         ];
 
-        if ($request->ajax()) {
+        if ($request->ajax() || $request->route()->getPrefix() === 'api') {
             $response = [
                 'status' => 403,
                 'success' => false,
@@ -139,7 +139,7 @@ class RoomController extends Controller
     {
         $room->delete();
 
-        if (request()->ajax()) {
+        if (request()->ajax() || request()->route()->getPrefix() === 'api') {
             return response()->json([
                 'status' => 200,
                 'success' => true,

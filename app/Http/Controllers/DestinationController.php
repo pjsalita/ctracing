@@ -15,7 +15,7 @@ class DestinationController extends Controller
      */
     public function index()
     {
-        if (request()->ajax()) {
+        if (request()->ajax() || request()->route()->getPrefix() === 'api') {
             return response()->json(Destination::all());
         }
 
@@ -43,7 +43,7 @@ class DestinationController extends Controller
             'time' => 'required|date_format:H:i',
         ];
 
-        if ($request->ajax()) {
+        if ($request->ajax() || $request->route()->getPrefix() === 'api') {
             $response = [
                 'status' => 403,
                 'success' => false,
@@ -104,7 +104,7 @@ class DestinationController extends Controller
             'time' => 'sometimes|date_format:H:i',
         ];
 
-        if ($request->ajax()) {
+        if ($request->ajax() || $request->route()->getPrefix() === 'api') {
             $response = [
                 'status' => 403,
                 'success' => false,
@@ -142,7 +142,7 @@ class DestinationController extends Controller
     public function destroy(Destination $destination)
     {
         $destination->delete();
-        if (request()->ajax()) {
+        if (request()->ajax() || request()->route()->getPrefix() === 'api') {
             return response()->json([
                 'status' => 200,
                 'success' => true,

@@ -15,7 +15,7 @@ class ContactController extends Controller
      */
     public function index()
     {
-        if (request()->ajax()) {
+        if (request()->ajax() || request()->route()->getPrefix() === 'api') {
             return response()->json(Contact::all());
         }
 
@@ -44,7 +44,7 @@ class ContactController extends Controller
             'time' => 'required|date_format:H:i',
         ];
 
-        if ($request->ajax()) {
+        if ($request->ajax() || $request->route()->getPrefix() === 'api') {
             $response = [
                 'status' => 403,
                 'success' => false,
@@ -106,7 +106,7 @@ class ContactController extends Controller
             'time' => 'sometimes|date_format:H:i',
         ];
 
-        if ($request->ajax()) {
+        if ($request->ajax() || $request->route()->getPrefix() === 'api') {
             $response = [
                 'status' => 403,
                 'success' => false,
@@ -144,7 +144,7 @@ class ContactController extends Controller
     public function destroy(Contact $contact)
     {
         $contact->delete();
-        if (request()->ajax()) {
+        if (request()->ajax() || request()->route()->getPrefix() === 'api') {
             return response()->json([
                 'status' => 200,
                 'success' => true,

@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\UserController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DestinationController;
 use App\Http\Controllers\RoomController;
 use Illuminate\Support\Facades\Route;
@@ -20,6 +20,6 @@ function notFound () {
     return response()->json([ 'status' => 404, 'message' => 'Not found.' ]);
 };
 
-Route::apiResource('users', UserController::class)->missing('notFound');
+Route::apiResource('contacts', ContactController::class)->missing('notFound');
 Route::apiResource('destinations', DestinationController::class)->missing('notFound');
 Route::apiResource('rooms', RoomController::class)->missing('notFound');
