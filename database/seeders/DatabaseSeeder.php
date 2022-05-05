@@ -13,6 +13,11 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // \App\Models\User::factory(10)->create();
+        \App\Models\User::create([
+            'name' => 'Super Admin',
+            'email' => 'admin@arguide.app',
+            'password' => \Hash::make('s3cure'),
+            'email_verified_at' => now(),
+        ]);
     }
 }

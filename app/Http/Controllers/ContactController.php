@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
+use App\Models\Contact;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class UserController extends Controller
+class ContactController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,16 +16,16 @@ class UserController extends Controller
     public function index()
     {
         if (request()->ajax()) {
-            return response()->json(User::all());
+            return response()->json(Contact::all());
         }
 
-        $users = User::paginate(10);
-        return view('users.index', compact('users'));
+        $contacts = Contact::paginate(10);
+        return view('contacts.index', compact('contacts'));
     }
 
     public function create()
     {
-        return view('users.create');
+        return view('contacts.create');
     }
 
     /**
@@ -56,11 +56,11 @@ class UserController extends Controller
             if ($validator->fails()) {
                 $response['response'] = $validator->messages();
             } else {
-                $user = User::create($request->all());
+                $contact = Contact::create($request->all());
                 $response = [
                     'status' => 200,
                     'success' => true,
-                    'response' => [ 'data' => $user ],
+                    'response' => [ 'data' => $contact ],
                 ];
             }
 
@@ -68,35 +68,35 @@ class UserController extends Controller
         }
 
         $validated = $request->validate($rules);
-        User::create($validated);
+        Contact::create($validated);
 
-        return redirect()->route('user.index')->with('success', 'Successfully added.');
+        return redirect()->route('contact.index')->with('success', 'Successfully added.');
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\User  $user
+     * @param  \App\Models\Contact  $contact
      * @return \Illuminate\Http\Response
      */
-    public function show(User $user)
+    public function show(Contact $contact)
     {
-        return response()->json($user);
+        return response()->json($contact);
     }
 
-    public function edit(User $user)
+    public function edit(Contact $contact)
     {
-        return view('users.edit', compact('user'));
+        return view('contacts.edit', compact('contact'));
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\User  $user
+     * @param  \App\Models\Contact  $contact
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, User $user)
+    public function update(Request $request, Contact $contact)
     {
         $rules = [
             'name' => 'sometimes|string|max:255',
@@ -118,11 +118,11 @@ class UserController extends Controller
             if ($validator->fails()) {
                 $response['response'] = $validator->messages();
             } else {
-                $user->update($request->all());
+                $contact->update($request->all());
                 $response = [
                     'status' => 200,
                     'success' => true,
-                    'response' => [ 'data' => $user ],
+                    'response' => [ 'data' => $contact ],
                 ];
             }
 
@@ -130,7 +130,7 @@ class UserController extends Controller
         }
 
         $validated = $request->validate($rules);
-        $user->update($validated);
+        $contact->update($validated);
 
         return back()->with('success', 'Successfully updated.');
     }
@@ -138,20 +138,20 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\User  $user
+     * @param  \App\Models\Contact  $contact
      * @return \Illuminate\Http\Response
      */
-    public function destroy(User $user)
+    public function destroy(Contact $contact)
     {
-        $user->delete();
+        $contact->delete();
         if (request()->ajax()) {
             return response()->json([
                 'status' => 200,
                 'success' => true,
-                'message' => 'User successfully deleted.'
+                'message' => 'Contact successfully deleted.'
             ]);
         }
 
-        return redirect()->route('user.index')->with('success', 'Successfully deleted.');
+        return redirect()->route('contact.index')->with('success', 'Successfully deleted.');
     }
 }

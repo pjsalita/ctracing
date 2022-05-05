@@ -2,10 +2,10 @@
 
 @section('content')
 <div class="flex items-center justify-between mb-5">
-    <h1 class="text-xl font-bold">Create User</h1>
+    <h1 class="text-xl font-bold">Create Contact</h1>
 </div>
 
-<form class="max-w-2xl" method="post" action="{{ route('user.store') }}">
+<form class="max-w-2xl" method="post" action="{{ route('contact.store') }}">
     @csrf
     <div class="relative z-0 w-full mb-6 group">
         <input type="text" name="name" class="input @error('name') input-error @enderror" placeholder="Name" />
