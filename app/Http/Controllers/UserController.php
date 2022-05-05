@@ -15,7 +15,17 @@ class UserController extends Controller
      */
     public function index()
     {
-        return response()->json(User::all());
+        if (request()->ajax()) {
+            return response()->json(User::all());
+        }
+
+        $users = User::paginate(10);
+        return view('users.index', compact('users'));
+    }
+
+    public function create()
+    {
+        return view('users.create');
     }
 
     /**
@@ -26,32 +36,41 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        $response = [
-            'status' => 403,
-            'success' => false,
-            'response' => '',
-        ];
-
-        $validator = Validator::make($request->all(), [
+        $rules = [
             'name' => 'required|string|max:255',
             'address' => 'required|string|max:255',
             'purpose' => 'required|string|max:255',
             'date' => 'required|date_format:Y-m-d',
             'time' => 'required|date_format:H:i',
-        ]);
+        ];
 
-        if ($validator->fails()) {
-            $response['response'] = $validator->messages();
-        } else {
-            $user = User::create($request->all());
+        if ($request->ajax()) {
             $response = [
-                'status' => 200,
-                'success' => true,
-                'response' => [ 'data' => $user ],
+                'status' => 403,
+                'success' => false,
+                'response' => '',
             ];
+
+            $validator = Validator::make($request->all(), $rules);
+
+            if ($validator->fails()) {
+                $response['response'] = $validator->messages();
+            } else {
+                $user = User::create($request->all());
+                $response = [
+                    'status' => 200,
+                    'success' => true,
+                    'response' => [ 'data' => $user ],
+                ];
+            }
+
+            return response()->json($response, $response['status']);
         }
 
-        return response()->json($response, $response['status']);
+        $validated = $request->validate($rules);
+        User::create($validated);
+
+        return redirect()->route('user.index')->with('success', 'Successfully added.');
     }
 
     /**
@@ -65,6 +84,11 @@ class UserController extends Controller
         return response()->json($user);
     }
 
+    public function edit(User $user)
+    {
+        return view('users.edit', compact('user'));
+    }
+
     /**
      * Update the specified resource in storage.
      *
@@ -74,32 +98,41 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        $response = [
-            'status' => 403,
-            'success' => false,
-            'response' => '',
-        ];
-
-        $validator = Validator::make($request->all(), [
+        $rules = [
             'name' => 'sometimes|string|max:255',
             'address' => 'sometimes|string|max:255',
             'purpose' => 'sometimes|string|max:255',
             'date' => 'sometimes|date_format:Y-m-d',
             'time' => 'sometimes|date_format:H:i',
-        ]);
+        ];
 
-        if ($validator->fails()) {
-            $response['response'] = $validator->messages();
-        } else {
-            $user->update($request->all());
+        if ($request->ajax()) {
             $response = [
-                'status' => 200,
-                'success' => true,
-                'response' => [ 'data' => $user ],
+                'status' => 403,
+                'success' => false,
+                'response' => '',
             ];
+
+            $validator = Validator::make($request->all(), $rules);
+
+            if ($validator->fails()) {
+                $response['response'] = $validator->messages();
+            } else {
+                $user->update($request->all());
+                $response = [
+                    'status' => 200,
+                    'success' => true,
+                    'response' => [ 'data' => $user ],
+                ];
+            }
+
+            return response()->json($response, $response['status']);
         }
 
-        return response()->json($response, $response['status']);
+        $validated = $request->validate($rules);
+        $user->update($validated);
+
+        return back()->with('success', 'Successfully updated.');
     }
 
     /**
@@ -111,11 +144,14 @@ class UserController extends Controller
     public function destroy(User $user)
     {
         $user->delete();
+        if (request()->ajax()) {
+            return response()->json([
+                'status' => 200,
+                'success' => true,
+                'message' => 'User successfully deleted.'
+            ]);
+        }
 
-        return response()->json([
-            'status' => 200,
-            'success' => true,
-            'message' => 'User successfully deleted.'
-        ]);
+        return redirect()->route('user.index')->with('success', 'Successfully deleted.');
     }
 }

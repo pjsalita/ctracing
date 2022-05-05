@@ -15,7 +15,17 @@ class DestinationController extends Controller
      */
     public function index()
     {
-        return response()->json(Destination::all());
+        if (request()->ajax()) {
+            return response()->json(Destination::all());
+        }
+
+        $destinations = Destination::paginate(10);
+        return view('destinations.index', compact('destinations'));
+    }
+
+    public function create()
+    {
+        return view('destinations.create');
     }
 
     /**
@@ -26,31 +36,40 @@ class DestinationController extends Controller
      */
     public function store(Request $request)
     {
-        $response = [
-            'status' => 403,
-            'success' => false,
-            'response' => '',
-        ];
-
-        $validator = Validator::make($request->all(), [
+        $rules = [
             'name' => 'required|string|max:255',
             'location' => 'required|string|max:255',
             'date' => 'required|date_format:Y-m-d',
             'time' => 'required|date_format:H:i',
-        ]);
+        ];
 
-        if ($validator->fails()) {
-            $response['response'] = $validator->messages();
-        } else {
-            $destination = Destination::create($request->all());
+        if ($request->ajax()) {
             $response = [
-                'status' => 200,
-                'success' => true,
-                'response' => [ 'data' => $destination ],
+                'status' => 403,
+                'success' => false,
+                'response' => '',
             ];
+
+            $validator = Validator::make($request->all(), $rules);
+
+            if ($validator->fails()) {
+                $response['response'] = $validator->messages();
+            } else {
+                $destination = Destination::create($request->all());
+                $response = [
+                    'status' => 200,
+                    'success' => true,
+                    'response' => [ 'data' => $destination ],
+                ];
+            }
+
+            return response()->json($response, $response['status']);
         }
 
-        return response()->json($response, $response['status']);
+        $validated = $request->validate($rules);
+        Destination::create($validated);
+
+        return redirect()->route('destination.index')->with('success', 'Successfully added.');
     }
 
     /**
@@ -64,6 +83,11 @@ class DestinationController extends Controller
         return response()->json($destination);
     }
 
+    public function edit(Destination $destination)
+    {
+        return view('destinations.edit', compact('destination'));
+    }
+
     /**
      * Update the specified resource in storage.
      *
@@ -73,31 +97,40 @@ class DestinationController extends Controller
      */
     public function update(Request $request, Destination $destination)
     {
-        $response = [
-            'status' => 403,
-            'success' => false,
-            'response' => '',
-        ];
-
-        $validator = Validator::make($request->all(), [
+        $rules = [
             'name' => 'sometimes|string|max:255',
             'location' => 'sometimes|string|max:255',
             'date' => 'sometimes|date_format:Y-m-d',
             'time' => 'sometimes|date_format:H:i',
-        ]);
+        ];
 
-        if ($validator->fails()) {
-            $response['response'] = $validator->messages();
-        } else {
-            $destination->update($request->all());
+        if ($request->ajax()) {
             $response = [
-                'status' => 200,
-                'success' => true,
-                'response' => [ 'data' => $destination ],
+                'status' => 403,
+                'success' => false,
+                'response' => '',
             ];
+
+            $validator = Validator::make($request->all(), $rules);
+
+            if ($validator->fails()) {
+                $response['response'] = $validator->messages();
+            } else {
+                $destination->update($request->all());
+                $response = [
+                    'status' => 200,
+                    'success' => true,
+                    'response' => [ 'data' => $destination ],
+                ];
+            }
+
+            return response()->json($response, $response['status']);
         }
 
-        return response()->json($response, $response['status']);
+        $validated = $request->validate($rules);
+        $destination->update($validated);
+
+        return back()->with('success', 'Successfully updated.');
     }
 
     /**
@@ -109,11 +142,14 @@ class DestinationController extends Controller
     public function destroy(Destination $destination)
     {
         $destination->delete();
+        if (request()->ajax()) {
+            return response()->json([
+                'status' => 200,
+                'success' => true,
+                'message' => 'Destination successfully deleted.'
+            ]);
+        }
 
-        return response()->json([
-            'status' => 200,
-            'success' => true,
-            'message' => 'Destination successfully deleted.'
-        ]);
+        return redirect()->route('destination.index')->with('success', 'Successfully deleted.');
     }
 }
