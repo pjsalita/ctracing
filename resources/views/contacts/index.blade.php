@@ -19,6 +19,9 @@
                     Address
                 </th>
                 <th scope="col" class="px-6 py-3">
+                    Contact No.
+                </th>
+                <th scope="col" class="px-6 py-3">
                     Purpose
                 </th>
                 <th scope="col" class="px-6 py-3">
@@ -40,6 +43,9 @@
                     </td>
                     <td class="px-6 py-4">
                         {{ $contact->address }}
+                    </td>
+                    <td class="px-6 py-4">
+                        {{ $contact->contactNo }}
                     </td>
                     <td class="px-6 py-4">
                         {{ $contact->purpose }}

@@ -39,6 +39,7 @@ class ContactController extends Controller
         $rules = [
             'name' => 'required|string|max:255',
             'address' => 'required|string|max:255',
+            'contactNo' => 'required|string|max:255',
             'purpose' => 'required|string|max:255',
             'date' => 'required|date_format:Y-m-d',
             'time' => 'required|date_format:H:i',
@@ -101,6 +102,7 @@ class ContactController extends Controller
         $rules = [
             'name' => 'sometimes|string|max:255',
             'address' => 'sometimes|string|max:255',
+            'contactNo' => 'required|string|max:255',
             'purpose' => 'sometimes|string|max:255',
             'date' => 'sometimes|date_format:Y-m-d',
             'time' => 'sometimes|date_format:H:i',
